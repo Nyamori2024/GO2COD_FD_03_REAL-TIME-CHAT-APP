@@ -5,14 +5,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      // Proxy configuration can be kept for other relative path requests if needed
       "/api": {
-        target: "http://localhost:5004", // Your backend server
+        target: "http://localhost:5000",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
       "/socket.io": {
-        target: "http://localhost:5004", // Backend server
-        ws: true, // Enable WebSocket proxying
+        target: "http://localhost:5000",
+        ws: true,
         changeOrigin: true,
       },
     },

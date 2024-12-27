@@ -6,20 +6,24 @@ const dotenv = require('dotenv');
 const http = require('http'); // Import http module
 const { Server } = require('socket.io'); // Import Socket.IO
 
+// Load environment variables from .env file
 dotenv.config({ path: '/workspaces/GO2COD_FD_03_REAL-TIME-CHAT-APP/chat-app-backend/.env' });
-
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
-app.use(cors());
+// Middleware to handle CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
 
-
-// console.log(process.env.MONGODB_URI); // Log the MongoDB URI to ensure it's being loaded correctly
 // MongoDB connection
-mongoose.connect(process.env.MONGODB_URI )
+mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
@@ -33,7 +37,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
     cors: {
-        origin: '*', // Adjust this to your frontend URL in production
+        origin: '*', 
         methods: ['GET', 'POST'],
         credentials: true
     }
